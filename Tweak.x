@@ -378,6 +378,8 @@
             [indicesToRemove addIndex:i];
         }
         if ([pID isEqualToString:@"FEuploads"]) {
+            [indicesToRemove addIndex:i];
+            pID.hidden = YES;
             [self removeFromSuperview];
         }
         // if ([pID isEqualToString:@"FEsubscriptions"]) {
@@ -394,7 +396,6 @@
     %orig(renderer);
 }
 %end
-
 /*
 // Remove Tabs
 %hook YTPivotBarView
