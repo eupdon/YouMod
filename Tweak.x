@@ -1,6 +1,10 @@
 // All codes are adapt from YTLite
 #import "Headers.h"
 
+@interface QTMButton : UIButton
+@property (nonatomic, copy, readwrite) NSString *accessibilityIdentifier;
+@end
+
 %hook YTIElementRenderer
 - (NSData *)elementData {
     // if (self.hasCompatibilityOptions && self.compatibilityOptions.hasAdLoggingData && ytlBool(@"noAds")) return nil;
@@ -21,6 +25,16 @@
     }
 
     return %orig;
+}
+%end
+
+// Remove Cast button from the player
+%hook QTMButton
+- (void)layoutSubviews {
+    %orig;
+    if ([self.accessibilityIdentifier isEqualToString:@"id.mdx.playbackroute.button"]) {
+        self.hidden = YES;
+    }
 }
 %end
 
