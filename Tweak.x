@@ -231,6 +231,10 @@
 // - (void)didMoveToWindow { %orig; if (ytlBool(@"dontSnapToChapter")) self.enableSnapToChapter = NO; }
 // %end
 
+%hook YTModularPlayerBarController
+- (void)setEnableSnapToChapter:(BOOL)arg { %orig(YES); }
+%end
+
 // Disable Hints
 %hook YTSettings
 - (BOOL)areHintsDisabled { return YES; }
