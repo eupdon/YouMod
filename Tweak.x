@@ -687,7 +687,7 @@ static NSDictionary<NSString *, NSString *> *HideToggleMap(void) {
             id.ui.video_metadata_carousel -> Preview comments in full video
             */
             @"horizontal-video-shelf.eml": @"HideHoriShelf",
-            @"feed_nudge.view": @"HideGenMusicShelf",
+            @"feed_nudge.view": @"HideGenMusicShelf"
         };
     });
     return map;
