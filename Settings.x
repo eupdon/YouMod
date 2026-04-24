@@ -93,6 +93,16 @@ NSBundle *YouModBundle() {
         }];
     [sectionItems addObject:tweakVersion];
 
+    // Note
+    YTSettingsSectionItem *note = [YTSettingsSectionItemClass itemWithTitle:LOC(@"NOTE")
+        titleDescription:nil
+        accessibilityIdentifier:nil
+        detailTextBlock:nil
+        selectBlock:^BOOL (YTSettingsCell *cell, NSUInteger arg1) {
+            return NO;
+        }];
+    [sectionItems addObject:note];
+
     // Section 0
     // Github
     YTSettingsSectionItem *github = [YTSettingsSectionItemClass itemWithTitle:nil
@@ -282,6 +292,18 @@ NSBundle *YouModBundle() {
         settingItemId:0];
     [sectionItems addObject:hideshortsself];
 
+    // Hide search history and suggestions
+    YTSettingsSectionItem *hidesearchhis = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SEARCH_HISTORY")
+        titleDescription:LOC(@"HIDE_SEARCH_HISTORY_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideSearchHis)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideSearchHis];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hidesearchhis];
+
     // Section 3
     // Player
     YTSettingsSectionItem *player = [YTSettingsSectionItemClass itemWithTitle:nil
@@ -425,6 +447,102 @@ NSBundle *YouModBundle() {
         settingItemId:0];
     [sectionItems addObject:autoexitfullscreen];
 
+    // Disable the remaining time
+    YTSettingsSectionItem *disshowremaining = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"DISABLES_SHOW_REMAINING")
+        titleDescription:LOC(@"DISABLES_SHOW_REMAINING_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(DisablesShowRemaining)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:DisablesShowRemaining];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:disshowremaining];
+
+    // Always show the remaining time
+    YTSettingsSectionItem *alwaysshowremaining = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"ALWAYS_SHOW_REMAINING")
+        titleDescription:LOC(@"ALWAYS_SHOW_REMAINING_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(AlwaysShowRemaining)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:AlwaysShowRemaining];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:alwaysshowremaining];
+
+    // Hide fullscreen actions
+    YTSettingsSectionItem *hidefullscreenactions = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_FULLSCREEN_ACTIONS")
+        titleDescription:LOC(@"HIDE_FULLSCREEN_ACTIONS_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideFullAction)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideFullAction];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hidefullscreenactions];
+
+    // Hide fullscreen video title
+    YTSettingsSectionItem *hidevideotitle = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_FULL_VID_TITLE")
+        titleDescription:LOC(@"HIDE_FULL_VID_TITLE_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideFullvidTitle)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideFullvidTitle];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hidevideotitle];
+
+    // Disables autoplay video
+    YTSettingsSectionItem *stopautoplayvideo = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"STOP_AUTOPLAY_VIDEO")
+        titleDescription:LOC(@"STOP_AUTOPLAY_VIDEO_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(StopAutoplayVideo)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:StopAutoplayVideo];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:stopautoplayvideo];
+
+    // Hide content warning
+    YTSettingsSectionItem *hidecontentwarning = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_CONTENT_WARNING")
+        titleDescription:LOC(@"HIDE_CONTENT_WARNING_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideContentWarning)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideContentWarning];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hidecontentwarning];
+
+    // Hide related video on finish
+    YTSettingsSectionItem *hiderelatevideo = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_RELATE_VIDEO")
+        titleDescription:LOC(@"HIDE_RELATE_VIDEO_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideRelateVideo)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideRelateVideo];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hiderelatevideo];
+
+    // Auto full screen
+    YTSettingsSectionItem *autofullscreen = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"AUTO_FULLSCREEN")
+        titleDescription:LOC(@"AUTO_FULLSCREEN_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(AutoFullScreen)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:AutoFullScreen];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:autofullscreen];
+
     // Hide like button
     YTSettingsSectionItem *hidelikebutton = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_LIKE_BUTTON")
         titleDescription:LOC(@"HIDE_LIKE_BUTTON_DESC")
@@ -522,6 +640,185 @@ NSBundle *YouModBundle() {
         settingItemId:0];
     [sectionItems addObject:hidedownloadbutton];
     */
+
+    // Section 3
+    // Shorts
+    YTSettingsSectionItem *shorts = [YTSettingsSectionItemClass itemWithTitle:nil
+        titleDescription:LOC(@"SHORTS")
+        accessibilityIdentifier:nil
+        detailTextBlock:nil
+        selectBlock:^BOOL (YTSettingsCell *cell, NSUInteger arg1) {
+            return NO;
+        }];
+    [sectionItems addObject:shorts];
+
+    // Hide like button
+    YTSettingsSectionItem *hideshortslikebutton = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_LIKE_BUTTON")
+        titleDescription:LOC(@"HIDE_SHORTS_LIKE_BUTTON_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsLikeButton)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsLikeButton];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortslikebutton];
+
+    // Hide dislike button
+    YTSettingsSectionItem *hideshortsdislikebutton = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_DISLIKE_BUTTON")
+        titleDescription:LOC(@"HIDE_SHORTS_DISLIKE_BUTTON_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsDisLikeButton)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsDisLikeButton];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortsdislikebutton];
+
+    // Hide comment button
+    YTSettingsSectionItem *hideshortscommentbutton = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_COMMENT_BUTTON")
+        titleDescription:LOC(@"HIDE_SHORTS_COMMENT_BUTTON_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsCommentButton)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsCommentButton];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortscommentbutton];
+
+    // Hide share button
+    YTSettingsSectionItem *hideshortssharebutton = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_SHARE_BUTTON")
+        titleDescription:LOC(@"HIDE_SHORTS_SHARE_BUTTON_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsShareButton)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsShareButton];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortssharebutton];
+
+    // Hide remix button
+    YTSettingsSectionItem *hideshortsremixbutton = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_REMIX_BUTTON")
+        titleDescription:LOC(@"HIDE_SHORTS_REMIX_BUTTON_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsRemixButton)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsRemixButton];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortsremixbutton];
+
+    // Hide sound metadata button
+    YTSettingsSectionItem *hideshortssoundmetabutton = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_METADATA_BUTTON")
+        titleDescription:LOC(@"HIDE_METADATA_BUTTON_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsMetaButton)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsMetaButton];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortssoundmetabutton];
+
+    // Hide products
+    YTSettingsSectionItem *hideshortsproducts = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_PRODUCT")
+        titleDescription:LOC(@"HIDE_SHORTS_PRODUCT_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsProducts)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsProducts];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortsproducts];
+
+    // Hide recommendation action bar
+    YTSettingsSectionItem *hideshortsrecbar = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_RECBAR")
+        titleDescription:LOC(@"HIDE_SHORTS_RECBAR_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsRecbar)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsRecbar];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortsrecbar];
+
+    // Hide 'Commitions' bar
+    YTSettingsSectionItem *hideshortscommition = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_COMMIT")
+        titleDescription:LOC(@"HIDE_SHORTS_COMMIT_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsCommit)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsCommit];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortscommition];
+
+    // Hide subscriptions button (at the top)
+    YTSettingsSectionItem *hideshortssubscript = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_SUBSCRIPT_BUTTON")
+        titleDescription:LOC(@"HIDE_SHORTS_SUBSCRIPT_BUTTON_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsSubscriptButton)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsSubscriptButton];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortssubscript];
+
+    // Hide live button (at the top)
+    YTSettingsSectionItem *hideshortslive = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_LIVE_BUTTON")
+        titleDescription:LOC(@"HIDE_SHORTS_LIVE_BUTTON_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsLiveButton)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsLiveButton];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortslive];
+
+    // Hide link to full video
+    YTSettingsSectionItem *hideshortstovid = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"HIDE_SHORTS_TO_VIDEO")
+        titleDescription:LOC(@"HIDE_SHORTS_TO_VIDEO_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(HideShortsToVideo)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:HideShortsToVideo];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:hideshortstovid];
+
+    // Force enables Shorts quality picker
+    YTSettingsSectionItem *enablesshortsquality = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"ENABLES_SHORTS_QUALITY")
+        titleDescription:LOC(@"ENABLES_SHORTS_QUALITY_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(EnablesShortsQuality)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:EnablesShortsQuality];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:enablesshortsquality];
+
+    // Always show the seekbar in Shorts
+    YTSettingsSectionItem *showshortsseekbar = [YTSettingsSectionItemClass switchItemWithTitle:LOC(@"SHOW_SHORTS_SEEKBAR")
+        titleDescription:LOC(@"SHOW_SHORTS_SEEKBAR_DESC")
+        accessibilityIdentifier:nil
+        switchOn:IS_ENABLED(ShowShortsSeekbar)
+        switchBlock:^BOOL (YTSettingsCell *cell, BOOL enabled) {
+            [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:ShowShortsSeekbar];
+            return YES;
+        }
+        settingItemId:0];
+    [sectionItems addObject:showshortsseekbar];
 
     // Section 4
     // Tab bar

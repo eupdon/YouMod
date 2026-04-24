@@ -92,6 +92,15 @@
 }
 %end
 
+%hook _ASDisplayView
+
+- (void)didMoveToWindow {
+    %orig;
+    if (IS_ENABLED(HideGenMusicShelf) && [self.accessibilityIdentifier isEqualToString:@"feed_nudge.view"]) self.hidden = YES;
+}
+
+%end
+
 %hook YTIElementRenderer
 - (NSData *)elementData {
     NSString *description = [self description];
@@ -105,42 +114,6 @@
 }
 %end
 
-%hook _ASDisplayView
-
-- (void)didMoveToWindow {
-    %orig;
-    if (IS_ENABLED(HideGenMusicShelf) && [self.accessibilityIdentifier isEqualToString:@"feed_nudge.view"]) self.hidden = YES;
-    if (IS_ENABLED(HideLikeButton) && [self.accessibilityIdentifier isEqualToString:@"id.video.like.button"]) self.hidden = YES;
-    if (IS_ENABLED(HideDisLikeButton) && [self.accessibilityIdentifier isEqualToString:@"id.video.dislike.button"]) self.hidden = YES;
-    if (IS_ENABLED(HideShareButton) && [self.accessibilityIdentifier isEqualToString:@"id.video.share.button"]) self.hidden = YES;
-    if (IS_ENABLED(HideDownloadButton) && [self.accessibilityIdentifier isEqualToString:@"id.ui.add_to.offline.button"]) self.hidden = YES;
-    if (IS_ENABLED(HideClipButton) && [self.accessibilityIdentifier isEqualToString:@"clip_button.eml"]) self.hidden = YES;
-    if (IS_ENABLED(HideRemixButton) && [self.accessibilityIdentifier isEqualToString:@"id.video.remix.button"]) self.hidden = YES;
-    if (IS_ENABLED(HideSaveButton) && [self.accessibilityIdentifier isEqualToString:@"id.video.add_to.button"]) self.hidden = YES;
-    /*
-            // identifiers
-            @"id.video.like.button": @"YouModHideLikeButton", // Like button
-            @"id.video.dislike.button": @"YouModHideDisLikeButton", // Dislike button
-            @"id.video.share.button": @"YouModHideShareButton", // Share button
-            @"id.ui.add_to.offline.button": @"YouModHideDownloadButton", // Download button
-            @"clip_button.eml": @"YouModHideClipButton", // Clip button
-            @"id.video.remix.button": @"YouModHideRemixButton", // Remix button
-            @"id.video.add_to.button": @"YouModHideSaveButton", // Save to playlist button
-            // @"id.ui.carousel_header": @"YouModHideRemixButton" // Comment section - TEST
-            Extra keys
-            id.reel_multi_format_link = Shorts -> full video
-            id.reel_like_button
-            id.reel_dislike_button
-            id.reel_comment_button
-            id.reel_share_button
-            id.reel_remix_button
-            id.reel_pivot_button Sound metadate in shorts
-            id.ui.video_metadata_carousel -> Preview comments in full video
-    */
-}
-
-%end
-
 %hook YTSearchViewController
 - (void)viewDidLoad {
     %orig;
@@ -148,27 +121,12 @@
         [self setValue:@(NO) forKey:@"_isVoiceSearchAllowed"];
     }
 }
-// - (void)setSuggestions:(id)arg1 {}
+- (void)setSuggestions:(id)arg1 { if (!IS_ENABLED(HideSearchHis)) %orig; }
 %end
 
-/* idk this is a great feature to add or not
 %hook YTPersonalizedSuggestionsCacheProvider
-- (id)activeCache { return nil; }
+- (id)activeCache { return IS_ENABLED(HideSearchHis) ? nil : %orig; }
 %end
-*/
-
-/*
-// Disable Fullscreen Actions
-%hook YTFullscreenActionsView
-- (BOOL)enabled { return ytlBool(@"noFullscreenActions") ? NO : YES; }
-- (void)setEnabled:(BOOL)arg1 { ytlBool(@"noFullscreenActions") ? %orig(NO) : %orig; }
-%end
-
-// Dont Show Related Videos on Finish
-%hook YTFullscreenEngagementOverlayController
-- (void)setRelatedVideosVisible:(BOOL)arg1 { ytlBool(@"noRelatedVids") ? %orig(NO) : %orig; }
-%end
-*/
 
 %hook YTMainAppControlsOverlayView
 // Hide autoplay Switch
@@ -179,14 +137,17 @@
 - (id)playbackRouteButton { return IS_ENABLED(HideCastButtonPlayer) ? nil : %orig; }
 - (void)setPreviousButtonHidden:(BOOL)arg { IS_ENABLED(HidePrevButton) ? %orig(YES) : %orig; }
 - (void)setNextButtonHidden:(BOOL)arg { IS_ENABLED(HideNextButton) ? %orig(YES) : %orig; }
-
-// TEST
-- (BOOL)titleViewHidden {
-    return YES;
-}
-
+// Hide video title in full screen
+- (BOOL)titleViewHidden { return IS_ENABLED(HideFullvidTitle) ? YES : %orig; }
 %end
 
+%hook YTSettings
+- (BOOL)isAutoplayEnabled { return IS_ENABLED(HideAutoPlayToggle) ? NO : %orig; }
+%end
+
+%hook YTSettingsImpl
+- (BOOL)isAutoplayEnabled { return IS_ENABLED(HideAutoPlayToggle) ? NO : %orig; }
+%end
 
 /* idk what is this thing does
 %hook YTColdConfig
@@ -229,63 +190,135 @@
 - (BOOL)shouldExitFullScreenOnFinish { return IS_ENABLED(AutoExitFullScreen) ? YES : %orig; }
 %end
 
-// Enables shorts quality - works best with YTClassicVideoQuality
-%hook YTHotConfig
-- (BOOL)enableOmitAdvancedMenuInShortsVideoQualityPicker { return YES; }
-- (BOOL)enableShortsVideoQualityPicker { return YES; }
-- (BOOL)iosEnableImmersiveLivePlayerVideoQuality { return YES; }
-- (BOOL)iosEnableShortsPlayerVideoQuality { return YES; }
-- (BOOL)iosEnableShortsPlayerVideoQualityRestartVideo { return YES; }
-- (BOOL)iosEnableSimplerTitleInShortsVideoQualityPicker { return YES; }
+// Disable toggle time remaining - @bhackel
+%hook YTInlinePlayerBarContainerView
+- (void)setShouldDisplayTimeRemaining:(BOOL)arg1 { 
+    if (IS_ENABLED(DisablesShowRemaining)) return;
+    IS_ENABLED(AlwaysShowRemaining) ? %orig(YES) : %orig(NO);
+}
 %end
 
-%hook YTShortsPlayerViewController
-- (BOOL)shouldAlwaysEnablePlayerBar { return YES; }
-- (BOOL)shouldEnablePlayerBarOnlyOnPause { return NO; }
-%end
-
-%hook YTReelPlayerViewController
-- (BOOL)shouldAlwaysEnablePlayerBar { return YES; }
-- (BOOL)shouldEnablePlayerBarOnlyOnPause { return NO; }
-%end
-
-%hook YTReelPlayerViewControllerSub
-- (BOOL)shouldAlwaysEnablePlayerBar { return YES; }
-- (BOOL)shouldEnablePlayerBarOnlyOnPause { return NO; }
-%end
-
-%hook YTColdConfig
-- (BOOL)iosEnableVideoPlayerScrubber { return YES; }
-- (BOOL)mobileShortsTablnlinedExpandWatchOnDismiss { return YES; }
-%end
-
-%hook YTHotConfig
-- (BOOL)enablePlayerBarForVerticalVideoWhenControlsHiddenInFullscreen { return YES; }
-%end
-
-%hook YTHeaderView
-- (BOOL)stickyNavHeaderEnabled { return YES; } // idk what is this does, the nav is already sticky... 
-%end
-
-// Always use remaining time in the video player - @bhackel WORKS!
+// Always use remaining time in the video player - @bhackel
 %hook YTPlayerBarController
 // When a new video is played, enable time remaining flag
 - (void)setActiveSingleVideo:(id)arg1 {
     %orig;
-    // Get the player bar view
-    YTInlinePlayerBarContainerView *playerBar = self.playerBar;
-    if (playerBar) {
-        // Enable the time remaining flag
-        playerBar.shouldDisplayTimeRemaining = YES;
+    if (IS_ENABLED(AlwaysShowRemaining) && !IS_ENABLED(DisablesShowRemaining)) {
+        // Get the player bar view
+        YTInlinePlayerBarContainerView *playerBar = self.playerBar;
+        if (playerBar) {
+            // Enable the time remaining flag
+            playerBar.shouldDisplayTimeRemaining = YES;
+        }
     }
 }
 %end
 
-// Disable toggle time remaining - @bhackel WORKS
-%hook YTInlinePlayerBarContainerView
-- (void)setShouldDisplayTimeRemaining:(BOOL)arg1 {
-    %orig(YES);
+// Disable Fullscreen Actions
+%hook YTFullscreenActionsView
+- (BOOL)enabled { return IS_ENABLED(HideFullAction) ? NO : %orig; }
+- (void)setEnabled:(BOOL)arg1 { IS_ENABLED(HideFullAction) ? %orig(NO) : %orig; }
+%end
+
+// Disable Autoplay 
+%hook YTPlaybackConfig
+- (void)setStartPlayback:(BOOL)arg1 { IS_ENABLED(StopAutoplayVideo) ? %orig(NO) : %orig; }
+%end
+
+// Skip Content Warning (https://github.com/qnblackcat/uYouPlus/blob/main/uYouPlus.xm#L452-L454)
+%hook YTPlayabilityResolutionUserActionUIController
+- (void)showConfirmAlert { IS_ENABLED(HideContentWarning) ? [self confirmAlertDidPressConfirm] : %orig; }
+%end
+
+%hook YTPlayabilityResolutionUserActionUIControllerImpl
+- (void)showConfirmAlert { IS_ENABLED(HideContentWarning) ? [self confirmAlertDidPressConfirm] : %orig; }
+%end
+
+// Dont Show Related Videos on Finish
+%hook YTFullscreenEngagementOverlayController
+- (void)setRelatedVideosVisible:(BOOL)arg1 { IS_ENABLED(HideRelateVideo) ? %orig(NO) : %orig; }
+%end
+
+%hook YTFullscreenEngagementOverlayView
+- (void)setRelatedVideosView:(id)arg { if (!IS_ENABLED(HideRelateVideo)) %orig; }
+%end
+
+%hook _ASDisplayView
+
+- (void)didMoveToWindow {
+    %orig;
+    if (IS_ENABLED(HideLikeButton) && [self.accessibilityIdentifier isEqualToString:@"id.video.like.button"]) self.hidden = YES;
+    if (IS_ENABLED(HideDisLikeButton) && [self.accessibilityIdentifier isEqualToString:@"id.video.dislike.button"]) self.hidden = YES;
+    if (IS_ENABLED(HideShareButton) && [self.accessibilityIdentifier isEqualToString:@"id.video.share.button"]) self.hidden = YES;
+    if (IS_ENABLED(HideDownloadButton) && [self.accessibilityIdentifier isEqualToString:@"id.ui.add_to.offline.button"]) self.hidden = YES;
+    if (IS_ENABLED(HideClipButton) && [self.accessibilityIdentifier isEqualToString:@"clip_button.eml"]) self.hidden = YES;
+    if (IS_ENABLED(HideRemixButton) && [self.accessibilityIdentifier isEqualToString:@"id.video.remix.button"]) self.hidden = YES;
+    if (IS_ENABLED(HideSaveButton) && [self.accessibilityIdentifier isEqualToString:@"id.video.add_to.button"]) self.hidden = YES;
 }
+
+%end
+
+// Shorts
+
+%hook _ASDisplayView
+
+- (void)didMoveToWindow {
+    %orig;
+    if (IS_ENABLED(HideShortsLikeButton) && [self.accessibilityIdentifier isEqualToString:@"id.reel_like_button"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsDisLikeButton) && [self.accessibilityIdentifier isEqualToString:@"id.reel_dislike_button"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsCommentButton) && [self.accessibilityIdentifier isEqualToString:@"id.reel_comment_button"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsShareButton) && [self.accessibilityIdentifier isEqualToString:@"id.reel_share_button"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsRemixButton) && [self.accessibilityIdentifier isEqualToString:@"id.reel_remix_button"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsMetaButton) && [self.accessibilityIdentifier isEqualToString:@"id.reel_pivot_button"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsProducts) && [self.accessibilityIdentifier isEqualToString:@"product_sticker.main_target"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsProducts) && [self.accessibilityIdentifier isEqualToString:@"product_sticker.secondary_target"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsRecbar) && [self.accessibilityIdentifier isEqualToString:@"id.elements.components.suggested_action.button"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsCommit) && [self.accessibilityIdentifier isEqualToString:@"eml.shorts-disclosures"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsSubscriptButton) && [self.accessibilityIdentifier isEqualToString:@"id.ui.shorts_paused_state.subscriptions_button"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsLiveButton) && [self.accessibilityIdentifier isEqualToString:@"id.ui.shorts_paused_state.live_button"]) self.hidden = YES;
+    if (IS_ENABLED(HideShortsToVideo) && [self.accessibilityIdentifier isEqualToString:@"id.reel_multi_format_link"]) self.hidden = YES;
+}
+
+%end
+
+// Enables shorts quality - works best with YTClassicVideoQuality
+%hook YTHotConfig
+- (BOOL)enableOmitAdvancedMenuInShortsVideoQualityPicker { return IS_ENABLED(EnablesShortsQuality) ? YES : %orig; }
+- (BOOL)enableShortsVideoQualityPicker { return IS_ENABLED(EnablesShortsQuality) ? YES : %orig; }
+- (BOOL)iosEnableImmersiveLivePlayerVideoQuality { return IS_ENABLED(EnablesShortsQuality) ? YES : %orig; }
+- (BOOL)iosEnableShortsPlayerVideoQuality { return IS_ENABLED(EnablesShortsQuality) ? YES : %orig; }
+- (BOOL)iosEnableShortsPlayerVideoQualityRestartVideo { return IS_ENABLED(EnablesShortsQuality) ? YES : %orig; }
+- (BOOL)iosEnableSimplerTitleInShortsVideoQualityPicker { return IS_ENABLED(EnablesShortsQuality) ? YES : %orig; }
+%end
+
+// Always show Shorts seekbar
+%hook YTShortsPlayerViewController
+- (BOOL)shouldAlwaysEnablePlayerBar { return IS_ENABLED(ShowShortsSeekbar) ? YES : %orig; }
+- (BOOL)shouldEnablePlayerBarOnlyOnPause { return IS_ENABLED(ShowShortsSeekbar) ? NO : %orig; }
+%end
+
+%hook YTReelPlayerViewController
+- (BOOL)shouldAlwaysEnablePlayerBar { return IS_ENABLED(ShowShortsSeekbar) ? YES : %orig; }
+- (BOOL)shouldEnablePlayerBarOnlyOnPause { return IS_ENABLED(ShowShortsSeekbar) ? NO : %orig; }
+%end
+
+%hook YTReelPlayerViewControllerSub
+- (BOOL)shouldAlwaysEnablePlayerBar { return IS_ENABLED(ShowShortsSeekbar) ? YES : %orig; }
+- (BOOL)shouldEnablePlayerBarOnlyOnPause { return IS_ENABLED(ShowShortsSeekbar) ? NO : %orig; }
+%end
+
+%hook YTColdConfig
+- (BOOL)iosEnableVideoPlayerScrubber { return IS_ENABLED(ShowShortsSeekbar) ? YES : %orig; }
+- (BOOL)mobileShortsTablnlinedExpandWatchOnDismiss { return IS_ENABLED(ShowShortsSeekbar) ? YES : %orig; }
+%end
+
+%hook YTHotConfig
+- (BOOL)enablePlayerBarForVerticalVideoWhenControlsHiddenInFullscreen { return IS_ENABLED(ShowShortsSeekbar) ? YES : %orig; }
+%end
+
+%hook YTHeaderView
+- (BOOL)stickyNavHeaderEnabled { return IS_ENABLED(YTPremiumLogo) ? YES : NO; } // idk what is this does, the nav is already sticky... Or this thing only happens in iPhone?
+- (void)setStickyNavHeaderEnabled:(BOOL)arg { IS_ENABLED(YTPremiumLogo) ? %orig(YES) : %orig(NO); }
 %end
 
 // Miscellaneous
@@ -380,15 +413,6 @@
 %end
 
 /*
-// works i guess
-// Disable Fullscreen Actions
-%hook YTFullscreenActionsView
-- (BOOL)enabled { return NO; }
-- (void)setEnabled:(BOOL)arg1 { %orig(NO); }
-%end
-*/
-
-/*
 %hook YTInlinePlayerBarContainerView
 - (void)setPlayerBarAlpha:(CGFloat)alpha { %orig(1.0); } // Force seek bar i guess
 %end
@@ -408,30 +432,7 @@
 %hook YTWatchViewController
 - (unsigned long long)allowedFullScreenOrientations { return PortraitFullscreen() ? UIInterfaceOrientationMaskAllButUpsideDown; } // wth is this?
 %end
-
-// Disable Autoplay 
-%hook YTPlaybackConfig
-- (void)setStartPlayback:(BOOL)arg1 { NoAutoPlay() ? %orig(NO); }
-%end
 */
-
-// Skip Content Warning (https://github.com/qnblackcat/uYouPlus/blob/main/uYouPlus.xm#L452-L454)
-%hook YTPlayabilityResolutionUserActionUIController
-- (void)showConfirmAlert { [self confirmAlertDidPressConfirm]; }
-%end
-
-%hook YTPlayabilityResolutionUserActionUIControllerImpl
-- (void)showConfirmAlert { [self confirmAlertDidPressConfirm]; }
-%end
-
-// Dont Show Related Videos on Finish
-%hook YTFullscreenEngagementOverlayController
-- (void)setRelatedVideosVisible:(BOOL)arg1 { %orig(NO); }
-%end
-
-%hook YTFullscreenEngagementOverlayView
-- (void)setRelatedVideosView:(id)arg {} // works - hide recommend video after finished
-%end
 
 // Disable Snap To Chapter (https://github.com/qnblackcat/uYouPlus/blob/main/uYouPlus.xm#L457-464) - GOT REMOVED
 // %hook YTSegmentableInlinePlayerBarView
@@ -442,21 +443,30 @@
 - (void)setEnableSnapToChapter:(BOOL)arg { %orig(NO); } // idk this works or not
 %end
 
-/* Wait for now
 %hook YTPlayerViewController
 - (void)loadWithPlayerTransition:(id)arg1 playbackConfig:(id)arg2 {
     %orig;
-    if (ytlBool(@"autoFullscreen")) [self performSelector:@selector(autoFullscreen) withObject:nil afterDelay:0.75];
-    if (ytlBool(@"shortsToRegular")) [self performSelector:@selector(shortsToRegular) withObject:nil afterDelay:0.75];
-    if (ytlBool(@"disableAutoCaptions")) [self performSelector:@selector(turnOffCaptions) withObject:nil afterDelay:1.0];
+    if (IS_ENABLED(AutoFullScreen)) [self performSelector:@selector(YouModAutoFullscreen) withObject:nil afterDelay:0.75];
+    // if (ytlBool(@"shortsToRegular")) [self performSelector:@selector(shortsToRegular) withObject:nil afterDelay:0.75];
+    // if (ytlBool(@"disableAutoCaptions")) [self performSelector:@selector(turnOffCaptions) withObject:nil afterDelay:1.0];
+}
+
+- (void)prepareToLoadWithPlayerTransition:(id)arg1 expectedLayout:(id)arg2 {
+    %orig;
+    if (IS_ENABLED(AutoFullScreen)) [self performSelector:@selector(YouModAutoFullscreen) withObject:nil afterDelay:0.75];
+    // if (ytlBool(@"shortsToRegular")) [self performSelector:@selector(shortsToRegular) withObject:nil afterDelay:0.75];
+    // if (ytlBool(@"disableAutoCaptions")) [self performSelector:@selector(turnOffCaptions) withObject:nil afterDelay:1.0];
 }
 
 %new
-- (void)autoFullscreen {
+- (void)YouModAutoFullscreen {
     YTWatchController *watchController = [self valueForKey:@"_UIDelegate"];
-    [watchController showFullScreen]; // wil try
+    [watchController showFullScreen];
 }
 
+%end
+
+/*
 %new
 - (void)shortsToRegular {
     if (self.contentVideoID != nil && [self.parentViewController isKindOfClass:NSClassFromString(@"YTShortsPlayerViewController")]) {
