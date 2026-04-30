@@ -254,7 +254,7 @@ jobs:
 
       - name: Clone YouChooseQuality
         if: ${{ inputs.youchoose }}
-        run: git clone --quiet https://github.com/eupdon/YouChooseQuality.git
+        run: git clone --quiet https://github.com/PoomSmart/YouChooseQuality.git
 
       - name: Clone YouShare
         if: ${{ inputs.youshare }}
