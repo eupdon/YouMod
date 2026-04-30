@@ -234,7 +234,7 @@ jobs:
 
       - name: Clone DontEatMyContent
         if: ${{ inputs.demc }}
-        run: git clone --quiet --depth=1 https://github.com/therealFoxster/DontEatMyContent.git
+        run: git clone --quiet --depth=1 https://github.com/eupdon/DontEatMyContent.git
 
       - name: Clone YouMute
         if: ${{ inputs.youmute }}
@@ -254,7 +254,7 @@ jobs:
 
       - name: Clone YouChooseQuality
         if: ${{ inputs.youchoose }}
-        run: git clone --quiet https://github.com/PoomSmart/YouChooseQuality.git
+        run: git clone --quiet https://github.com/eupdon/YouChooseQuality.git
 
       - name: Clone YouShare
         if: ${{ inputs.youshare }}
